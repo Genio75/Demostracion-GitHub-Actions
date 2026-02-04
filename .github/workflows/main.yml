@@ -1,0 +1,35 @@
+name: Demostración Integración Continua
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  serve-html:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Validar y servir index.html
+        run: |
+          if [ ! -f index.html ]; then
+            echo "ERROR: index.html no existe"
+            exit 1
+          else
+            echo "index.html encontrado correctamente"
+            echo "Mostrando primeras líneas del archivo:"
+            head -n 10 index.html
+
+            echo "Iniciando servidor en el puerto 5555..."
+            # Levanta el servidor en segundo plano
+            python3 -m http.server 5555 &
+            
+            # Espera un momento para que el servidor arranque
+            sleep 5
+            
+            # Comprueba que la página se sirve correctamente
+            echo "Probando acceso a index.html en localhost..."
+            curl http://localhost:5555
+          fi
