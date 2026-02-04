@@ -24,7 +24,7 @@ jobs:
 
             echo "Iniciando servidor en el puerto 5555..."
             # Levanta el servidor en segundo plano
-            python3 -m http.server 5555 & --option-falsa
+            python3 -m http.server 5555 &
             
             # Espera un momento para que el servidor arranque
             sleep 5
