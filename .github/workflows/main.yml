@@ -1,35 +1,42 @@
-name: Demostración Integración Continua
+name: Demostracion GitHub Actions
 
 on:
   push:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
-  serve-html:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
 
-      - name: Validar y servir index.html
+      - name: Validar que index.html existe
         run: |
           if [ ! -f index.html ]; then
             echo "ERROR: index.html no existe"
             exit 1
-          else
-            echo "index.html encontrado correctamente"
-            echo "Mostrando primeras líneas del archivo:"
-            head -n 10 index.html
-
-            echo "Iniciando servidor en el puerto 5555..."
-            # Levanta el servidor en segundo plano
-            python3 -m http.server 5555 &
-            
-            # Espera un momento para que el servidor arranque
-            sleep 5
-            
-            # Comprueba que la página se sirve correctamente
-            echo "Probando acceso a index.html en localhost..."
-            curl http://localhost:5555
           fi
+          echo "index.html encontrado correctamente"
+
+      - name: Mostrar primeras líneas del archivo
+        run: head -n 10 index.html
+
+      - name: Preparar archivos para Pages
+        run: |
+          mkdir site
+          cp index.html site/
+
+      - name: Subir artefacto para GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Desplegar en GitHub Pages
+        uses: actions/deploy-pages@v4
