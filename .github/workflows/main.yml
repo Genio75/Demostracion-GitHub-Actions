@@ -30,7 +30,7 @@ jobs:
 
       - name: Preparar archivos para Pages
         run: |
-          mkdirdir site
+          mkdir site
           cp index.html site/
 
       - name: Subir artefacto para GitHub Pages
